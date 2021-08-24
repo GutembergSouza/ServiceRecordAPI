@@ -11,7 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-
+import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -27,9 +28,16 @@ public class ClientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private MessageResponseDTO createClient(@RequestBody  ClientDTO clientDTO){
+    private MessageResponseDTO createClient(@RequestBody @Valid ClientDTO clientDTO){
         return clientService.create(clientDTO);
     }
+
+    @GetMapping
+    private List<ClientDTO> listAllClient(){
+       return clientService.listAll();
+    }
+
+
 
 
 }

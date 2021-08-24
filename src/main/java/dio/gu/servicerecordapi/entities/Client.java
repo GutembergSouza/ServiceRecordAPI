@@ -24,7 +24,7 @@ public class Client {
     @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(unique = true)
     private String cpf;
 
     @Column
