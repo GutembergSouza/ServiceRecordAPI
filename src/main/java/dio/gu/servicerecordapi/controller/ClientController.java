@@ -3,6 +3,7 @@ package dio.gu.servicerecordapi.controller;
 import dio.gu.servicerecordapi.dto.ClientDTO;
 import dio.gu.servicerecordapi.dto.response.MessageResponseDTO;
 import dio.gu.servicerecordapi.entities.Client;
+import dio.gu.servicerecordapi.exceptions.PersonNotFoundException;
 import dio.gu.servicerecordapi.service.ClientService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class ClientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private MessageResponseDTO createClient(@RequestBody @Valid ClientDTO clientDTO){
+    private MessageResponseDTO createClient(@RequestBody @Valid ClientDTO clientDTO) {
         return clientService.create(clientDTO);
     }
 
@@ -37,7 +38,16 @@ public class ClientController {
        return clientService.listAll();
     }
 
+    @DeleteMapping("/{id}")
+    private MessageResponseDTO deleteById(@PathVariable Long id) throws PersonNotFoundException{
+          clientService.deleteById(id);
+        return MessageResponseDTO.builder().message("Deletado!").build();
+    }
 
-
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    private MessageResponseDTO updateById(@PathVariable Long id, @RequestBody @Valid ClientDTO clientDTO) throws PersonNotFoundException{
+       return clientService.update(id, clientDTO);
+    }
 
 }
