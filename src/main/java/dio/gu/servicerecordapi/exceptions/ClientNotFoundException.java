@@ -5,11 +5,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class PersonNotFoundException extends Exception {
+public class ClientNotFoundException extends Exception {
 
-    public PersonNotFoundException(Long id){
-        super (String.format("PErson not fouded for id  %s", id));
-
+    public ClientNotFoundException(Long id){
+        super (String.format("Client not founded for id  %s", id));
     }
 
 }

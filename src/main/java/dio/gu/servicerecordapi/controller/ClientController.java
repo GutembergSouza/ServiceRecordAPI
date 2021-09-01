@@ -2,14 +2,11 @@ package dio.gu.servicerecordapi.controller;
 
 import dio.gu.servicerecordapi.dto.ClientDTO;
 import dio.gu.servicerecordapi.dto.response.MessageResponseDTO;
-import dio.gu.servicerecordapi.entities.Client;
-import dio.gu.servicerecordapi.exceptions.PersonNotFoundException;
+import dio.gu.servicerecordapi.exceptions.ClientNotFoundException;
 import dio.gu.servicerecordapi.service.ClientService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,10 +19,7 @@ import java.util.List;
 public class ClientController {
 
     private ClientService clientService;
-    @RequestMapping
-    private String welcomeToClient(){
-        return "Bem Vindo! Pagina para Gerenciamento de Clientes!";
-    }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,15 +33,23 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
-    private MessageResponseDTO deleteById(@PathVariable Long id) throws PersonNotFoundException{
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void deleteById(@PathVariable Long id) throws ClientNotFoundException {
           clientService.deleteById(id);
-        return MessageResponseDTO.builder().message("Deletado!").build();
+
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    private MessageResponseDTO updateById(@PathVariable Long id, @RequestBody @Valid ClientDTO clientDTO) throws PersonNotFoundException{
+    private MessageResponseDTO update(@PathVariable Long id, @RequestBody @Valid ClientDTO clientDTO) throws ClientNotFoundException {
        return clientService.update(id, clientDTO);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    private ClientDTO findById(@PathVariable Long id)throws ClientNotFoundException {
+       return clientService.findById(id);
+
     }
 
 }

@@ -4,14 +4,13 @@ import dio.gu.servicerecordapi.dto.ClientDTO;
 import dio.gu.servicerecordapi.dto.mapper.ClientMapper;
 import dio.gu.servicerecordapi.dto.response.MessageResponseDTO;
 import dio.gu.servicerecordapi.entities.Client;
-import dio.gu.servicerecordapi.exceptions.PersonNotFoundException;
+import dio.gu.servicerecordapi.exceptions.ClientNotFoundException;
 import dio.gu.servicerecordapi.repositoy.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 public class ClientService {
 
     private ClientRepository clientRepository;
+
     private ClientMapper clientMapper;
 
 
@@ -40,7 +40,10 @@ public class ClientService {
     }
 
 
-    public void deleteById(Long id)throws PersonNotFoundException {
+    public void deleteById(Long id) throws ClientNotFoundException {
+        clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id));
+
           clientRepository.deleteById(id);
     }
 
@@ -51,20 +54,24 @@ public class ClientService {
                 .build();
     }
 
-    public ClientDTO findById(Long id) throws PersonNotFoundException {
+    public ClientDTO findById(Long id) throws ClientNotFoundException {
         Client client =
                 clientRepository
                 .findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
+                .orElseThrow(() -> new ClientNotFoundException(id));
 
         return clientMapper.toDTO(client);
     }
 
-    public MessageResponseDTO update(Long id, ClientDTO clientDTO) throws PersonNotFoundException{
-        clientRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
+    public MessageResponseDTO update(Long id, ClientDTO clientDTO) throws ClientNotFoundException {
+        clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id));
+
         Client updatedClient = clientMapper.toModel(clientDTO);
         Client savedClient = clientRepository.save(updatedClient);
+
         MessageResponseDTO messageResponseDTO = createMessageResponse("Client suscefull updated wih id: "+ savedClient.getId());
+
         return messageResponseDTO;
     }
 }
